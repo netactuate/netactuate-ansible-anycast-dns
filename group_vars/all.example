@@ -1,0 +1,18 @@
+---
+auth_token: "YOUR_API_KEY"
+ansible_ssh_extra_args: '-o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10'
+
+ssh_public_key: keys.pub
+operating_system: 'Ubuntu 24.04 LTS (20240423)'
+bgp_group: YOUR_BGP_GROUP_ID
+contract_id: YOUR_CONTRACT_ID
+
+bgp_networks:
+    IPv4:
+    - { net: "192.0.2.0/24", ips: [ "192.0.2.1" ], origin: "65000" }
+    IPv6:
+    - { net: "2001:db8::/48", ips: [ "2001:db8::1" ], origin: "65000" }
+
+knot_listen_ipv4: "{{ bgp_networks.IPv4[0].ips[0] }}"
+knot_listen_ipv6: "{{ bgp_networks.IPv6[0].ips[0] | default('') }}"
+knot_operator_email: admin@example.com

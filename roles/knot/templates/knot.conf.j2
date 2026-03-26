@@ -1,0 +1,79 @@
+server:
+    rundir: "/run/knot"
+    user: knot:knot
+    listen: [ 0.0.0.0@53, ::@53 ]
+
+log:
+  - target: stderr
+    any: error
+  - target: /var/log/knot-query/knot-query.log
+    any: info
+
+mod-stats:
+  - id: custom
+    request-protocol: on
+    server-operation: on
+    request-bytes: on
+    response-bytes: on
+    response-code: on
+    query-type: on
+
+template:
+  - id: default
+    storage: "/var/lib/knot"
+    file: "%s.zone"
+    global-module: mod-stats/custom
+
+database:
+    storage: "/var/log/knot-query"
+
+# Example zones — replace with your own zone data.
+# The zones below are AS112 reference zones provided as a working example.
+# See https://www.as112.net/ for AS112 project details.
+zone:
+  - domain: 10.in-addr.arpa
+    file: db.dd-empty
+  - domain: 16.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 17.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 18.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 19.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 20.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 21.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 22.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 23.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 24.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 25.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 26.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 27.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 28.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 29.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 30.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 31.172.in-addr.arpa
+    file: db.dd-empty
+  - domain: 168.192.in-addr.arpa
+    file: db.dd-empty
+  - domain: 254.169.in-addr.arpa
+    file: db.dd-empty
+  - domain: empty.as112.arpa
+    file: db.dr-empty
+  - domain: hostname.as112.arpa
+    storage: /var/lib/knot
+    file: db.hostname.zone
+  - domain: hostname.as112.net
+    storage: /var/lib/knot
+    file: db.hostname.zone

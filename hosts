@@ -1,0 +1,7 @@
+[master]
+localhost ansible_connection=local ansible_python_interpreter=.venv/bin/python3
+
+[nodes]
+#dns-LAX.example.com location=LAX bgp_enabled=True plan='VR4x2x50'
+#dns-FRA.example.com location=FRA bgp_enabled=True plan='VR4x2x50'
+#dns-SIN.example.com location=SIN bgp_enabled=True plan='VR4x2x50'

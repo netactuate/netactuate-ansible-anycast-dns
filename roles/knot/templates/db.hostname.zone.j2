@@ -1,0 +1,16 @@
+; Per-node identification zone
+; Useful for verifying which PoP is serving a query.
+$TTL 1W
+@   SOA {{ ansible_fqdn }}. {{ knot_operator_email | replace('@', '.') }}. (
+            1               ; serial number
+            1W              ; refresh
+            1M              ; retry
+            1W              ; expire
+            1W )            ; negative caching TTL
+    NS  {{ ansible_fqdn }}.
+    TXT "Anycast DNS hosted by NetActuate"
+    TXT "Node: {{ inventory_hostname }}"
+    TXT "Server IP: {{ ansible_default_ipv4.address }}"
+{% if ansible_default_ipv6 is defined and ansible_default_ipv6.address is defined %}
+    TXT "Server IPv6: {{ ansible_default_ipv6.address }}"
+{% endif %}

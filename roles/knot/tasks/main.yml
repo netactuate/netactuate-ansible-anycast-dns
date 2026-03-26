@@ -1,0 +1,83 @@
+---
+- name: Stop and disable systemd-resolved
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+  ignore_errors: yes
+
+- name: Remove /etc/resolv.conf symlink
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: Create static /etc/resolv.conf
+  ansible.builtin.copy:
+    dest: /etc/resolv.conf
+    content: "nameserver 8.8.8.8\n"
+
+- name: Add KnotDNS PPA
+  ansible.builtin.apt_repository:
+    repo: "ppa:cz.nic-labs/knot-dns-latest"
+    state: present
+
+- name: Install KnotDNS
+  ansible.builtin.apt:
+    name:
+      - knot
+      - knot-dnsutils
+    state: present
+    update_cache: yes
+
+- name: Create knot log directory
+  ansible.builtin.file:
+    path: /var/log/knot-query
+    state: directory
+    owner: knot
+    group: knot
+    mode: "0755"
+
+- name: Create knot log file
+  ansible.builtin.file:
+    path: /var/log/knot-query/knot-query.log
+    state: touch
+    owner: knot
+    group: knot
+    mode: "0644"
+
+- name: Deploy zone files to /var/lib/knot
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/var/lib/knot/{{ item }}"
+    owner: knot
+    group: knot
+    mode: "0644"
+  with_items:
+    - db.dd-empty
+    - db.dr-empty
+
+- name: Deploy hostname zone files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "/var/lib/knot/{{ item.dest }}"
+    owner: knot
+    group: knot
+    mode: "0644"
+  with_items:
+    - { src: "db.hostname.zone.j2", dest: "db.hostname.zone" }
+
+- name: Deploy knot.conf
+  ansible.builtin.template:
+    src: knot.conf.j2
+    dest: /etc/knot/knot.conf
+    owner: knot
+    group: knot
+    mode: "0640"
+  notify:
+    - restart knot
+
+- name: Ensure KnotDNS is started and enabled
+  ansible.builtin.service:
+    name: knot
+    state: started
+    enabled: yes

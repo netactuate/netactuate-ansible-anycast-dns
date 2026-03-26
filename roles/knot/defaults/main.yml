@@ -1,0 +1,4 @@
+---
+knot_listen_ipv4: "127.0.0.1"
+knot_listen_ipv6: "::1"
+knot_operator_email: admin@example.com

@@ -1,0 +1,8 @@
+- name: Deploy KnotDNS on anycast nodes
+  hosts: nodes
+  remote_user: ubuntu
+  become: true
+  gather_facts: yes
+  roles:
+    - role: knot
+      tags: knot
